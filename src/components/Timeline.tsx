@@ -39,12 +39,38 @@ const timelineData = [
     {
       year: "April 2017",
       title: "New Camera",
-      description: "Say hello to HD! Clearer videos, crispier content — the glow-up was *real*.",
+      description: "Say hello to HD! Clearer videos, crispier content — the glow-up was *real*.   ",
       media: "/videos/Chibwawa Recipe.mp4",
       isVideo: true,
       position: "top",
     },
-  ];
+    {
+        year: "May 2018",
+        title: "Foodies TV Show",
+        description: "From the kitchen to the small screen! Temzie Bites made its television debut, stirring up taste buds across the country.",
+        media: "/videos/Foodies Episode 1 Promo.mp4",
+        isVideo: true,
+        position: "bottom",
+    },
+    {
+        year: "Oct 2019",
+        title: "Delele Video Hits 100k!",
+        description: "Who knew slimy could be so sensational? Our beloved delele slid its way into 100,000 hearts (and views) — proof that sometimes, *the slipperier, the better!*",
+        media: "/images/delele.jpg",
+        isVideo: false,
+        position: "top",
+      },
+      
+    {
+        year: "May 2021",
+        title: "Temzie's Spot: A Pop-Up Experience",
+        description: "Turning dreams into dishes — the first food market adventure featuring the *legendary* lamb gyro. Spoiler: it sold out!",
+        media: "/images/popup.jpg",
+        isVideo: false,
+        position: "bottom",
+    },
+];
+
   
 export default function Timeline() {
     const CARD_WIDTH = 240;
