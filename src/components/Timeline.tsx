@@ -4,39 +4,48 @@ import { motion } from "framer-motion";
 import TimelineMilestone from "./TimelineMilestone";
 
 const timelineData = [
-  {
-    year: "July 2016",
-    title: "Temzie Bites is Born",
-    description: "Started with a Huawei P9,a bedside lamp, a facebook page  and alot of creativity .",
-    media: "/images/Original Logo.png",
-    isVideo: false,
-    position: "top",
-  },
-  {
-    year: "August 2016",
-    title: "First WordPress Post ",
-    description: "Took a leap and started a blog!",
-    media: "/images/tikkachicken.jpg",
-    isVideo: false,
-    position: "bottom",
-  },
-  {
-    year: "March 2017",
-    title: "First Video",
-    description: "Lights Camera Action Temzie Bites Youtube is launched!",
-    media: "/videos/millet-nshima.mp4",
-    isVideo: true,
-    position: "top",
-  },
-  {
-    year: "May 2017",
-    title: "New Logo ",
-    description: "Temzie Bites",
-    media: "/images/logo2.png",
-    isVideo: false,
-    position: "bottom",
-  },
-];
+    {
+      year: "July 2016",
+      title: "Temzie Bites is Born",
+      description: "Armed with a Huawei P9, a bedside lamp, a Facebook page — and a *wild* imagination, Temzie Bites officially kicked off!",
+      media: "/images/Original Logo.png",
+      isVideo: false,
+      position: "top",
+    },
+    {
+      year: "August 2016",
+      title: "First WordPress Post",
+      description: "Clicked 'Publish' for the very first time — and just like that, a food blog was born!",
+      media: "/images/tikkachicken.jpg",
+      isVideo: false,
+      position: "bottom",
+    },
+    {
+      year: "March 2017",
+      title: "First Video",
+      description: "Lights, camera... deliciousness! Temzie Bites made its YouTube debut and the kitchen's never been the same!",
+      media: "/videos/millet-nshima.mp4",
+      isVideo: true,
+      position: "top",
+    },
+    {
+      year: "March 2017",
+      title: "New Logo, New Temzie",
+      description: "Fresh look, fresh vibe! (Even if not *everyone* loved the makeover...)",
+      media: "/images/Logo2.png",
+      isVideo: false,
+      position: "bottom",
+    },
+    {
+      year: "April 2017",
+      title: "New Camera",
+      description: "Say hello to HD! Clearer videos, crispier content — the glow-up was *real*.",
+      media: "/videos/Chibwawa Recipe.mp4",
+      isVideo: true,
+      position: "top",
+    },
+  ];
+  
 export default function Timeline() {
     const CARD_WIDTH = 240;
     const totalMovement = CARD_WIDTH * (timelineData.length - 1);
