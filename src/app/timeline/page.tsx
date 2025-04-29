@@ -1,4 +1,5 @@
-'use client';
+/* src/app/intro/page.tsx */
+"use client";
 
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -85,7 +86,6 @@ function TimelineMilestone({ year, title, description, media, isVideo, position 
 
   return (
     <div className="relative flex flex-col items-center md:w-64 w-full">
-      {/* centre guide-line only on desktop */}
       <div className="hidden md:block absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-green-600 via-yellow-500 to-red-600 opacity-30 -z-10" />
       {position === 'top' ? (
         <>
@@ -108,14 +108,12 @@ function TimelineMilestone({ year, title, description, media, isVideo, position 
 function TimelineStripDesktop() {
   return (
     <section className="hidden md:block relative w-full overflow-hidden py-24">
-      {/* moving centre line */}
       <motion.div
         className="absolute top-1/2 left-0 w-full h-[2px] bg-gradient-to-r from-green-600 via-yellow-500 to-red-600 opacity-40"
         style={{ translateY: '-50%' }}
         animate={{ opacity: [0.4, 0.15, 0.4] }}
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
       />
-      {/* infinite scroll strip */}
       <motion.div
         className="relative z-10 flex items-center space-x-24"
         initial={{ x: 0 }}
@@ -125,11 +123,7 @@ function TimelineStripDesktop() {
         {timelineData.map((m, i) => (
           <TimelineMilestone key={i} {...m} />
         ))}
-
-        {/* CTA — first loop */}
         <CTAButton />
-
-        {/* repeat again for seamless loop */}
         {timelineData.map((m, i) => (
           <TimelineMilestone key={`dup-${i}`} {...m} />
         ))}
@@ -176,10 +170,10 @@ export default function TimelinePage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden flex flex-col items-center bg-gradient-to-br from-green-50 via-yellow-50 to-red-50">
-      {/* sparkle layer */}
+      {/* sparkle layer → plays once */}
       <Lottie
         animationData={sparkleAnimation}
-        loop
+        loop={false}                     
         className="absolute inset-0 pointer-events-none"
       />
 
@@ -242,7 +236,7 @@ export default function TimelinePage() {
           stories, and the timeless joy of sharing a meal together.
         </motion.p>
 
-        {/* desktop vs mobile views */}
+        {/* desktop vs mobile timeline */}
         <TimelineStripDesktop />
         <TimelineStackMobile />
 
