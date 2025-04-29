@@ -1,9 +1,8 @@
-/* src/app/home/page.tsx – Temzie Bites Home */
 'use client';
 
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import Lottie from 'lottie-react';
+import dynamic from 'next/dynamic'; // ✨ dynamic import
 import { useEffect, useState } from 'react';
 
 /* ---- quick config ---- */
@@ -31,6 +30,10 @@ const cards = [
     gradient: 'from-fuchsia-500 via-pink-400 to-rose-500',
   },
 ] as const;
+
+/* ---- lazy load lottie-react with SSR disabled ---- */
+
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 
 /* ---- helper component for safe lottie ---- */
 
