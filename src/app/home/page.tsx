@@ -1,4 +1,4 @@
-/* src/app/page.tsx – Temzie Bites Home */
+/* src/app/home/page.tsx – Temzie Bites Home */
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -35,7 +35,7 @@ const cards = [
 /* ---- helper component for safe lottie ---- */
 
 function SafeLottie({ src }: { src: string }) {
-  const [animationData, setAnimationData] = useState<any>(null);
+  const [animationData, setAnimationData] = useState<Record<string, unknown> | null>(null);
 
   useEffect(() => {
     import(`@/animations/${src.split('/').pop()}`)
