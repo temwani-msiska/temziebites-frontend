@@ -3,7 +3,6 @@
 
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import Lottie from 'lottie-react';
 
 /* ---- quick config ---- */
