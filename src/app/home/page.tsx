@@ -1,9 +1,10 @@
-/* src/app/page.tsx  – Temzie Bites Home */
+/* src/app/page.tsx – Temzie Bites Home */
 'use client';
 
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Lottie from 'lottie-react';
+import { useEffect, useState } from 'react';
 
 /* ---- quick config ---- */
 
@@ -11,27 +12,43 @@ const cards = [
   {
     title: 'Recipes',
     text: 'Browse Temzie’s greatest hits – the dishes that started it all.',
-    lottie: '../../animations/recipes.json',
+    lottie: '/animations/recipes.json',
     href: '/recipes',
     gradient: 'from-red-500 via-amber-400 to-lime-500',
   },
   {
     title: 'Where to Eat',
     text: 'Hand-picked spots around Zambia (and beyond) that wowed Temzie.',
-    lottie: '../../animations/map-marker.json',
+    lottie: '/animations/map-marker.json',
     href: '/where-to-eat',
     gradient: 'from-emerald-500 via-teal-400 to-sky-500',
   },
   {
     title: 'Cooking Tips',
     text: 'Tiny hacks • big flavour. Level-up your kitchen game in minutes.',
-    lottie: '../../animations/tips.json',
+    lottie: '/animations/tips.json',
     href: '/tips',
     gradient: 'from-fuchsia-500 via-pink-400 to-rose-500',
   },
 ] as const;
 
-/* ---- component ---- */
+/* ---- helper component for safe lottie ---- */
+
+function SafeLottie({ src }: { src: string }) {
+  const [animationData, setAnimationData] = useState<any>(null);
+
+  useEffect(() => {
+    import(`@/animations/${src.split('/').pop()}`)
+      .then((mod) => setAnimationData(mod.default))
+      .catch((err) => console.error('Failed to load Lottie:', err));
+  }, [src]);
+
+  if (!animationData) return null;
+
+  return <Lottie animationData={animationData} loop className="h-32 w-32" />;
+}
+
+/* ---- main page ---- */
 
 export default function HomePage() {
   const router = useRouter();
@@ -62,7 +79,8 @@ export default function HomePage() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.15, duration: 0.8 }}
         >
-          Authentic Zambian flavours, fearless creativity,<br className="hidden sm:block" />
+          Authentic Zambian flavours, fearless creativity,
+          <br className="hidden sm:block" />
           and a pinch of wanderlust — since 2016.
         </motion.p>
       </header>
@@ -82,11 +100,7 @@ export default function HomePage() {
           >
             <div className="h-full flex flex-col bg-white rounded-3xl p-6">
               <div className="h-40 flex items-center justify-center">
-                <Lottie
-                  animationData={require(lottie)}
-                  loop
-                  className="h-32 w-32"
-                />
+                <SafeLottie src={lottie} />
               </div>
               <h3 className="mt-4 text-2xl font-bold text-gray-800">{title}</h3>
               <p className="mt-2 text-gray-600 flex-grow">{text}</p>
