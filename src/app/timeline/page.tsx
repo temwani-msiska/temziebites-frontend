@@ -2,12 +2,12 @@
 
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import Lottie from '@/lib/dynamicLottie'; // <- dynamic import wrapper (ssr:false)
+import Lottie from '@/lib/dynamicLottie';          // ssr:false wrapper
 import Image from 'next/image';
 import Link from 'next/link';
 import sparkleAnimation from '@/animations/sparkle.json';
 
-/*— DATA + small helpers at the bottom unchanged —*/
+/*————————————————————  DATA  ————————————————————*/
 type Milestone = {
   year: string;
   title: string;
@@ -28,27 +28,40 @@ const timelineData: Milestone[] = [
   { year: 'May 2021',  title: 'Pop-Up Experience',          description: 'Turning dreams…',                       media: '/images/popup.jpg',                     isVideo: false, position: 'bottom' },
 ];
 
-/*—————————  TIMELINE MILESTONE  —————————*/
+/*—————————————————  SINGLE MILESTONE  —————————————————*/
 function TimelineMilestone({ year, title, description, media, isVideo, position }: Milestone) {
   const Bubble = (
     <motion.div
-      className="w-44 h-44 rounded-full overflow-hidden border-4 border-transparent bg-white shadow-2xl"
+      className="md:w-44 md:h-44 w-36 h-36 rounded-full overflow-hidden border-4 border-transparent bg-white shadow-2xl"
       initial={{ scale: 0.8, opacity: 0.5 }}
       whileInView={{ scale: 1, opacity: 1 }}
       transition={{ duration: 0.8 }}
       viewport={{ once: true, amount: 0.4 }}
     >
       {isVideo ? (
-        <video src={media} muted autoPlay loop playsInline className="w-full h-full object-cover" />
+        <video
+          src={media}
+          muted
+          autoPlay
+          loop
+          playsInline
+          className="w-full h-full object-cover"
+        />
       ) : (
-        <Image src={media} alt={title} width={176} height={176} className="w-full h-full object-cover" />
+        <Image
+          src={media}
+          alt={title}
+          width={176}
+          height={176}
+          className="w-full h-full object-cover"
+        />
       )}
     </motion.div>
   );
 
   const Text = (
     <motion.div
-      className="bg-white/90 backdrop-blur-sm px-5 py-4 rounded-xl shadow-lg text-center max-w-[13rem]"
+      className="bg-white/90 backdrop-blur-sm px-5 py-4 rounded-xl shadow-lg text-center max-w-[15rem]"
       initial={{ y: 20, opacity: 0 }}
       whileInView={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.1 }}
@@ -60,11 +73,20 @@ function TimelineMilestone({ year, title, description, media, isVideo, position 
     </motion.div>
   );
 
-  const Connector = <motion.div className="w-px h-16 bg-gradient-to-b from-red-600 via-yellow-500 to-green-600" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.2 }} viewport={{ once: true }} />;
+  const Connector = (
+    <motion.div
+      className="w-px h-16 bg-gradient-to-b from-red-600 via-yellow-500 to-green-600"
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      transition={{ duration: 0.8, delay: 0.2 }}
+      viewport={{ once: true }}
+    />
+  );
 
   return (
-    <div className="relative flex flex-col items-center w-64">
-      <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-green-600 via-yellow-500 to-red-600 opacity-30 -z-10" />
+    <div className="relative flex flex-col items-center md:w-64 w-full">
+      {/* centre guide-line only on desktop */}
+      <div className="hidden md:block absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-green-600 via-yellow-500 to-red-600 opacity-30 -z-10" />
       {position === 'top' ? (
         <>
           {Text}
@@ -82,50 +104,86 @@ function TimelineMilestone({ year, title, description, media, isVideo, position 
   );
 }
 
-/*—————————  TIMELINE STRIP  —————————*/
-function TimelineStrip() {
+/*—————————————————  DESKTOP STRIP  —————————————————*/
+function TimelineStripDesktop() {
   return (
-    <section className="relative w-full overflow-hidden py-24">
+    <section className="hidden md:block relative w-full overflow-hidden py-24">
+      {/* moving centre line */}
       <motion.div
         className="absolute top-1/2 left-0 w-full h-[2px] bg-gradient-to-r from-green-600 via-yellow-500 to-red-600 opacity-40"
         style={{ translateY: '-50%' }}
         animate={{ opacity: [0.4, 0.15, 0.4] }}
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
       />
+      {/* infinite scroll strip */}
       <motion.div
         className="relative z-10 flex items-center space-x-24"
         initial={{ x: 0 }}
         animate={{ x: '-50%' }}
         transition={{ delay: 4, duration: 60, ease: 'linear', repeat: Infinity }}
       >
-        {timelineData.map((m, i) => <TimelineMilestone key={i} {...m} />)}
+        {timelineData.map((m, i) => (
+          <TimelineMilestone key={i} {...m} />
+        ))}
 
-        {/* CTA */}
-        <div className="flex flex-col items-center justify-center">
-          <Link href="/">
-            <button className="relative overflow-hidden rounded-full px-7 py-3 text-sm font-bold text-white bg-gradient-to-r from-green-600 via-yellow-500 to-red-600 shadow-xl">
-              <span className="relative z-10">🚀 Journey Continues…</span>
-              <motion.span className="absolute inset-0 bg-white/20" initial={{ x: '-100%' }} animate={{ x: ['-100%', '100%'] }} transition={{ duration: 3, repeat: Infinity, ease: 'linear' }} />
-            </button>
-          </Link>
-        </div>
+        {/* CTA — first loop */}
+        <CTAButton />
 
-        {timelineData.map((m, i) => <TimelineMilestone key={`dup-${i}`} {...m} />)}
+        {/* repeat again for seamless loop */}
+        {timelineData.map((m, i) => (
+          <TimelineMilestone key={`dup-${i}`} {...m} />
+        ))}
       </motion.div>
     </section>
   );
 }
 
-/*—————————  PAGE  —————————*/
+/*—————————————————  MOBILE STACK  —————————————————*/
+function TimelineStackMobile() {
+  return (
+    <section className="md:hidden w-full flex flex-col items-center gap-20 py-16 px-4">
+      {timelineData.map((m, i) => (
+        <TimelineMilestone key={i} {...m} position="top" />
+      ))}
+      <CTAButton />
+    </section>
+  );
+}
+
+/*—————————————————  CTA SHARED  —————————————————*/
+function CTAButton() {
+  return (
+    <Link href="/" className="flex flex-col items-center">
+      <motion.button
+        className="relative overflow-hidden rounded-full px-8 py-3 text-sm font-bold text-white bg-gradient-to-r from-green-600 via-yellow-500 to-red-600 shadow-xl"
+        whileHover={{ scale: 1.05 }}
+      >
+        <span className="relative z-10">🚀 Journey&nbsp;Continues…</span>
+        <motion.span
+          className="absolute inset-0 bg-white/20"
+          initial={{ x: '-100%' }}
+          animate={{ x: ['-100%', '100%'] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+        />
+      </motion.button>
+    </Link>
+  );
+}
+
+/*—————————————————  PAGE  —————————————————*/
 export default function TimelinePage() {
   const router = useRouter();
 
   return (
     <div className="relative min-h-screen overflow-hidden flex flex-col items-center bg-gradient-to-br from-green-50 via-yellow-50 to-red-50">
-      {/* sparkles */}
-      <Lottie animationData={sparkleAnimation} loop className="absolute inset-0 pointer-events-none" />
+      {/* sparkle layer */}
+      <Lottie
+        animationData={sparkleAnimation}
+        loop
+        className="absolute inset-0 pointer-events-none"
+      />
 
-      {/* drifting blobs recoloured */}
+      {/* floating blobs */}
       {[
         'top-[-5rem] left-[-6rem] w-[22rem] h-[22rem] bg-green-100',
         'top-8 right-12 w-[16rem] h-[16rem] bg-yellow-200 blur-3xl',
@@ -141,11 +199,19 @@ export default function TimelinePage() {
         />
       ))}
 
-      {/* — Brand badge — */}
-      <button onClick={() => router.push('/')} className="absolute top-5 left-5 group flex items-center gap-3 pl-3 pr-5 py-2 rounded-full bg-white/90 shadow-lg border-4 border-transparent hover:shadow-2xl transition-all">
+      {/* brand badge */}
+      <button
+        onClick={() => router.push('/')}
+        className="absolute top-5 left-5 group flex items-center gap-3 pl-3 pr-5 py-2 rounded-full bg-white/90 shadow-lg border-4 border-transparent hover:shadow-2xl transition-all"
+      >
         <span className="relative inline-flex">
-          <Image src="/images/logo.png" alt="Temzie Bites Logo" width={48} height={48} className="rounded-full" />
-          {/* glowing ring */}
+          <Image
+            src="/images/logo.png"
+            alt="Temzie Bites Logo"
+            width={48}
+            height={48}
+            className="rounded-full"
+          />
           <motion.span
             className="absolute inset-0 rounded-full bg-gradient-to-tr from-green-600 via-yellow-500 to-red-600 opacity-30 blur-md -z-10"
             animate={{ scale: [1, 1.1, 1] }}
@@ -157,32 +223,33 @@ export default function TimelinePage() {
         </span>
       </button>
 
-      {/* content */}
-      <main className="relative z-10 flex flex-col items-center w-full gap-8 pt-28 pb-16 px-4">
+      {/* header */}
+      <main className="relative z-10 flex flex-col items-center w-full gap-8 pt-28 pb-16">
         <motion.h1
-          className="text-4xl font-extrabold text-center bg-gradient-to-r from-green-700 via-yellow-600 to-red-600 bg-clip-text text-transparent"
+          className="text-4xl font-extrabold text-center bg-gradient-to-r from-green-700 via-yellow-600 to-red-600 bg-clip-text text-transparent px-4"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
         >
           The&nbsp;Temzie&nbsp;Bites&nbsp;Timeline
         </motion.h1>
-
-        {/* new sub-heading */}
         <motion.p
-          className="max-w-2xl text-center text-base sm:text-lg text-gray-800/90"
+          className="max-w-2xl text-center text-base sm:text-lg text-gray-800/90 px-4"
           initial={{ y: 10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.15 }}
         >
-          An&nbsp;<strong>African food blog</strong>&nbsp;celebrating bold flavours, vibrant stories,
-          and the timeless joy of sharing a meal together.
+          An&nbsp;<strong>African food blog</strong>&nbsp;celebrating bold flavours, vibrant
+          stories, and the timeless joy of sharing a meal together.
         </motion.p>
 
-        <TimelineStrip />
+        {/* desktop vs mobile views */}
+        <TimelineStripDesktop />
+        <TimelineStackMobile />
 
+        {/* back button */}
         <motion.button
           onClick={() => router.push('/')}
-          className="mt-2 px-9 py-3 rounded-full bg-gradient-to-r from-green-600 via-yellow-500 to-red-600 text-white shadow-xl text-sm font-semibold"
+          className="mt-4 px-9 py-3 rounded-full bg-gradient-to-r from-green-600 via-yellow-500 to-red-600 text-white shadow-xl text-sm font-semibold"
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           whileHover={{ scale: 1.05 }}
