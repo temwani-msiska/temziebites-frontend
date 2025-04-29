@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import Lottie from 'lottie-react';
+import Lottie from '@/lib/dynamicLottie';
 import sparkleAnimation from '@/animations/sparkle.json';
 
 export default function Page() {

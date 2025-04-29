@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import Lottie from 'lottie-react';
+import Lottie from '@/lib/dynamicLottie';
 import Image from 'next/image';
 import Link from 'next/link';
 import sparkleAnimation from '@/animations/sparkle.json';
