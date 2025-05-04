@@ -20,7 +20,7 @@ type MapClientProps = {
 
 export default function MapClient({ eateries, center }: MapClientProps) {
   useEffect(() => {
-    delete (L.Icon.Default.prototype as any)._getIconUrl;
+    // Safely override Leaflet default icons (no delete)
     L.Icon.Default.mergeOptions({
       iconRetinaUrl: "/leaflet/marker-icon-2x.png",
       iconUrl: "/leaflet/marker-icon.png",
@@ -37,7 +37,7 @@ export default function MapClient({ eateries, center }: MapClientProps) {
       {eateries.map((eatery, index) => (
         <Marker
           key={index}
-          position={[eatery.lat, eatery.lng]}
+          position={[eatery.lat, eatery.lng] as LatLngExpression}
           eventHandlers={{
             click: eatery.onClick,
           }}
