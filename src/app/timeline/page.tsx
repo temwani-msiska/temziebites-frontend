@@ -125,16 +125,13 @@ export default function TimelinePage() {
 
   return (
     <main className="relative min-h-screen bg-cover bg-center bg-no-repeat overflow-y-auto text-white font-sans">
-      {/* Semi-transparent overlay for better text contrast */}
       <div
         className="absolute inset-0 z-0 bg-repeat bg-top"
         style={{
           backgroundImage: "url('/images/backgroundtimeline.png')",
-          backgroundSize: "auto", // ensures it's not zoomed
+          backgroundSize: "auto",
         }}
       />
-
-      {/* Hero Section */}
       <section className="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-6">
         <motion.div
           initial={{ opacity: 0 }}
@@ -157,8 +154,7 @@ export default function TimelinePage() {
             transition={{ delay: 0.6, duration: 0.8 }}
             className="text-lg md:text-xl text-white leading-relaxed mb-12 max-w-2xl mx-auto"
           >
-            From humble blog posts to viral recipes and TV screens — here's how
-            we stirred the pot and transformed Zambian cuisine into a digital
+            From humble blog posts to viral recipes and TV screens — here&rsquo;s how we stirred the pot and transformed Zambian cuisine into a digital
             sensation.
           </motion.p>
 
@@ -179,7 +175,6 @@ export default function TimelinePage() {
         </motion.div>
       </section>
 
-      {/* Timeline Navigation */}
       <div
         ref={timelineRef}
         className="sticky top-0 z-20 bg-black/50 backdrop-blur-md py-4 border-b border-white/10 px-4"
@@ -209,8 +204,7 @@ export default function TimelinePage() {
         </div>
       </div>
 
-      {/* Timeline Sections */}
-      {Object.entries(milestones).map(([year, events], index) => (
+      {Object.entries(milestones).map(([year, events]) => (
         <section
           id={`year-${year}`}
           key={year}
@@ -292,7 +286,6 @@ export default function TimelinePage() {
         </section>
       ))}
 
-      {/* Media Modal */}
       <AnimatePresence>
         {modalMedia && (
           <motion.div
@@ -340,14 +333,12 @@ export default function TimelinePage() {
         )}
       </AnimatePresence>
 
-      {/* Footer */}
       <footer className="relative z-10 text-center py-8 bg-black/50 border-t border-white/10">
         <p className="text-white/60 text-sm">
           © {new Date().getFullYear()} Temzie Bites. All rights reserved.
         </p>
       </footer>
 
-      {/* Custom styling for hiding scrollbar */}
       <style jsx global>{`
         .hide-scrollbar::-webkit-scrollbar {
           display: none;
