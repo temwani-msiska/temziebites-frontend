@@ -29,9 +29,17 @@ export default function WhereToEatPage() {
 
   useEffect(() => {
     fetch("https://app.temziebites.com/api/eateries?populate[images]=*&populate[review]=*")
-      .then((res) => res.json())
-      .then((data) => setEateries(data.data));
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch eateries");
+        return res.json();
+      })
+      .then((data) => setEateries(data.data))
+      .catch((err) => {
+        console.error("API fetch error:", err);
+        setEateries([]); // fallback
+      });
   }, []);
+  
 
   const center: LatLngExpression = [-14.559, 28.6731];
 
