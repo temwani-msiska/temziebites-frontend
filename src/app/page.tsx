@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function Page() {
   const router = useRouter();
@@ -22,9 +23,9 @@ export default function Page() {
             <a href="#recipes" className="hover:text-[#d94f04]">
               Recipes
             </a>
-            <a href="/src/app/where-to-eat.tsx" className="hover:text-[#d94f04]">
+            <Link href="/where-to-eat" className="hover:text-[#d94f04]">
               Where to Eat
-            </a>
+            </Link>
           </div>
           <button className="px-5 py-2 border border-[#f9b233] text-[#5d3a00] rounded-full hover:bg-[#f9b233] hover:text-white transition text-sm font-semibold">
             Contact
@@ -66,8 +67,9 @@ export default function Page() {
               Zambia on a Plate
             </h1>
             <p className="text-lg leading-relaxed text-[#4a3d34] max-w-xl">
-            Not just recipes — traditions. Not just meals — memories.
-            Temzie Bites is a thoughtful journey into Zambia’s culinary heart — lovingly curated, tastefully captured, and shared with pride.
+              Not just recipes — traditions. Not just meals — memories. Temzie
+              Bites is a thoughtful journey into Zambia’s culinary heart —
+              lovingly curated, tastefully captured, and shared with pride.
             </p>
             <button
               onClick={() => router.push("/timeline")}

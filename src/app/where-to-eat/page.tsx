@@ -28,7 +28,8 @@ export default function WhereToEatPage() {
   const [eateries, setEateries] = useState<Eatery[]>([]);
 
   useEffect(() => {
-    fetch("https://app.temziebites.com/api/eateries?populate[images]=*&populate[review]=*")
+    fetch("https://app.temziebites.com/api/eateries?populate=images")
+
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch eateries");
         return res.json();
