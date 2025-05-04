@@ -17,8 +17,15 @@ const milestones = {
     {
       title: "First WordPress Post",
       description:
-        "With trembling hands and a plate of tikka chicken, the first blog post hits the internet — and Temzie’s flavor revolution begins.",
+        "With trembling hands and a plate of tikka chicken, the first blog post hits the internet — and Temzie's flavor revolution begins.",
       media: "/images/tikkachicken.jpg",
+      isVideo: false,
+    },
+    {
+      title: "No-Bake Hawaiian Pizza",
+      description:
+        "Pineapple, bravado, and a toaster oven. Innovation? Absolutely. Regrets? Maybe one.",
+      media: "/images/Pizza.jpg",
       isVideo: false,
     },
   ],
@@ -40,7 +47,7 @@ const milestones = {
     {
       title: "New Camera",
       description:
-        "Goodbye grainy pixels, hello delicious detail — a new camera brings every bite to life.",
+        "Goodbye grainy pixels, hello crisp cravings — a new camera brings every bite to life in delicious detail.",
       media: "/videos/chibwawa.mp4",
       isVideo: true,
     },
@@ -56,7 +63,7 @@ const milestones = {
     {
       title: "Another Logo, Same Heart",
       description:
-        "Reimagined yet rooted — the new logo reflects a bolder, more flavorful identity.",
+        "Reimagined yet rooted — the new logo reflects a bolder, richer, and more flavorful identity.",
       media: "/images/temziebites.png",
       isVideo: false,
     },
@@ -79,14 +86,14 @@ const milestones = {
     {
       title: "A Taste of Adventure",
       description:
-        "Curry goat, Zambian soul. A bold step into uncharted flavors, wrapped in tradition and fire.",
+        "Curry goat, Zambian soul. A bold step into uncharted flavors wrapped in fire and tradition.",
       media: "/images/goat.jpg",
       isVideo: false,
     },
     {
-      title: "Zambia’s Culinary Scene Explodes",
+      title: "Zambia's Culinary Scene Explodes",
       description:
-        "Fusion, fire, and flavor — new eateries and bold plates paint Zambia’s food map with delicious color.",
+        "From street eats to gourmet plates, Zambia's food map lights up — and Temzie Bites captures it all.",
       media: "/images/mexican.jpg",
       isVideo: false,
     },
@@ -95,8 +102,15 @@ const milestones = {
     {
       title: "Temzie Bites Pop-Up",
       description:
-        "What began as a blog becomes a live experience — the first-ever Temzie Bites pop-up brings the internet’s favorite flavors to real-life plates.",
+        "What began online comes to life — the first Temzie Bites pop-up serves up flavor, fans, and a whole lot of fun.",
       media: "/images/popup.jpg",
+      isVideo: false,
+    },
+    {
+      title: "6,000 Subscribers",
+      description:
+        "From humble clicks to kitchen cult status — 6,000 foodies strong and still growing. Tastebuds, assemble!",
+      media: "/images/Youtube.png",
       isVideo: false,
     },
   ],
@@ -154,8 +168,9 @@ export default function TimelinePage() {
             transition={{ delay: 0.6, duration: 0.8 }}
             className="text-lg md:text-xl text-white leading-relaxed mb-12 max-w-2xl mx-auto"
           >
-            From humble blog posts to viral recipes and TV screens — here&rsquo;s how we stirred the pot and transformed Zambian cuisine into a digital
-            sensation.
+            From humble blog posts to viral recipes and TV screens —
+            here&rsquo;s how we stirred the pot and transformed Zambian cuisine
+            into a digital sensation.
           </motion.p>
 
           <div className="flex justify-center">
@@ -333,7 +348,15 @@ export default function TimelinePage() {
         )}
       </AnimatePresence>
 
-      <footer className="relative z-10 text-center py-8 bg-black/50 border-t border-white/10">
+      <footer className="relative z-10 text-center py-10 bg-black/50 border-t border-white/10 flex flex-col items-center gap-4">
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => (window.location.href = "/")}
+          className="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-full border border-white/20 transition-all duration-300"
+        >
+          Home
+        </motion.button>
         <p className="text-white/60 text-sm">
           © {new Date().getFullYear()} Temzie Bites. All rights reserved.
         </p>
