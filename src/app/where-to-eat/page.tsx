@@ -31,14 +31,15 @@ type Eatery = {
 export default function WhereToEatPage() {
   const [eateries, setEateries] = useState<Eatery[]>([]);
 
+  // Fetch eateries from Strapi
   useEffect(() => {
     fetch("https://app.temziebites.com/api/eateries?populate[images]=*&populate[review]=*")
       .then((res) => res.json())
       .then((data) => setEateries(data.data));
   }, []);
 
+  // Fix Leaflet default icon (no delete)
   useEffect(() => {
-    delete (L.Icon.Default.prototype as any)._getIconUrl;
     L.Icon.Default.mergeOptions({
       iconRetinaUrl: "/leaflet/marker-icon-2x.png",
       iconUrl: "/leaflet/marker-icon.png",
