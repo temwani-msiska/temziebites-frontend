@@ -22,7 +22,7 @@ export default function Page() {
             <a href="#recipes" className="hover:text-[#d94f04]">
               Recipes
             </a>
-            <a href="/src/app/where-to-eat/page.tsx" className="hover:text-[#d94f04]">
+            <a href="/src/app/where-to-eat.tsx" className="hover:text-[#d94f04]">
               Where to Eat
             </a>
           </div>
