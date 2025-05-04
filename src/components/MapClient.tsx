@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import "leaflet/dist/leaflet.css";
 import type { LatLngExpression } from "leaflet";
 
-// Define the Eatery type (can be moved to a types.ts file)
+// Type
 type Eatery = {
   id: number;
   attributes?: {
@@ -39,6 +39,7 @@ export default function MapClient({ eateries }: MapClientProps) {
   return (
     <MapContainer center={center} zoom={6} style={{ height: "600px", width: "100%" }}>
       <TileLayer
+        // ✅ Secure HTTPS tile URL
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution="&copy; OpenStreetMap contributors"
       />

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 
-// Type definition
+// Define Eatery type
 type Eatery = {
   id: number;
   attributes?: {
@@ -26,7 +26,7 @@ type Eatery = {
   };
 };
 
-// ✅ Clean dynamic import with correct typing
+// 🔥 SSR-safe dynamic import
 const MapClient = dynamic(() => import("@/components/MapClient"), {
   ssr: false,
 }) as React.ComponentType<{ eateries: Eatery[] }>;
@@ -37,7 +37,10 @@ export default function WhereToEatPage() {
   useEffect(() => {
     fetch("https://app.temziebites.com/api/eateries?populate=images")
       .then((res) => res.json())
-      .then((data) => setEateries(data.data))
+      .then((data) => {
+        console.log("Fetched Eateries:", data.data);
+        setEateries(data.data);
+      })
       .catch((err) => console.error("Failed to fetch eateries", err));
   }, []);
 
