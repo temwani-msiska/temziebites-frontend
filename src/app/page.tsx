@@ -66,15 +66,14 @@ export default function Page() {
               Zambia on a Plate
             </h1>
             <p className="text-lg leading-relaxed text-[#4a3d34] max-w-xl">
-              Not just recipes — rituals. Not just meals — movements. Temzie
-              Bites is a curated journey through Zambia’s culinary soul —
-              plated, filmed, and reimagined.
+            Not just recipes — traditions. Not just meals — memories.
+            Temzie Bites is a thoughtful journey into Zambia’s culinary heart — lovingly curated, tastefully captured, and shared with pride.
             </p>
             <button
               onClick={() => router.push("/timeline")}
               className="px-6 py-3 bg-[#d94f04] text-white rounded-full font-bold shadow-md hover:bg-[#a23300] transition"
             >
-              Start the Journey
+              View the Journey, thus far
             </button>
           </div>
         </div>
@@ -123,7 +122,6 @@ export default function Page() {
               />
             </div>
           </motion.div>
-
           {/* Where to Eat */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -132,6 +130,9 @@ export default function Page() {
             viewport={{ once: true }}
             className="relative w-full max-w-3xl mx-auto py-16 px-8 text-[#2e2e2e] z-10"
           >
+            {/* Decorative Blob */}
+            <div className="absolute -top-20 -left-24 w-[480px] h-[480px] bg-[#fdd9a0] rounded-[60%] blur-[80px] opacity-60 z-0 pointer-events-none" />
+
             {/* Foreground Content */}
             <div className="relative z-10 text-center sm:text-left max-w-2xl mx-auto">
               <h2 className="text-4xl sm:text-5xl font-serif font-bold mb-4 text-[#5d3a00]">
