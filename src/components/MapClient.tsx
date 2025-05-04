@@ -43,7 +43,11 @@ export default function MapClient({ eateries }: MapClientProps) {
   const center: LatLngExpression = [-14.559, 28.6731];
 
   return (
-    <MapContainer center={center} zoom={6} style={{ height: "600px", width: "100%" }}>
+    <MapContainer
+      center={center}
+      zoom={6}
+      style={{ height: "600px", width: "100%" }}
+    >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution="&copy; OpenStreetMap contributors"
@@ -52,15 +56,8 @@ export default function MapClient({ eateries }: MapClientProps) {
       {eateries.map((eatery) => {
         if (!eatery) return null;
 
-        const {
-          id,
-          name,
-          description,
-          latitude,
-          longitude,
-          images,
-          review,
-        } = eatery;
+        const { id, name, description, latitude, longitude, images, review } =
+          eatery;
 
         const imgSrc = images?.data?.[0]?.attributes?.url
           ? `https://app.temziebites.com${images.data[0].attributes.url}`
@@ -68,19 +65,23 @@ export default function MapClient({ eateries }: MapClientProps) {
 
         return (
           <Marker key={id} position={[latitude, longitude] as LatLngExpression}>
-            <Popup>
-              <div className="text-sm max-w-[220px]">
+            <Popup maxWidth={300}>
+              <div className="text-sm w-[250px]">
                 <strong className="text-base text-[#d94f04]">{name}</strong>
                 <p className="mt-1">{description}</p>
+
                 {imgSrc && (
                   <img
                     src={imgSrc}
                     alt={name}
-                    className="mt-2 rounded-lg w-full h-28 object-cover"
+                    className="mt-2 rounded-lg w-full h-[120px] object-cover border"
                   />
                 )}
+
                 {review?.final && (
-                  <p className="mt-2 italic text-[11px] text-gray-600">{review.final}</p>
+                  <p className="mt-2 italic text-[11px] text-gray-600">
+                    {review.final}
+                  </p>
                 )}
               </div>
             </Popup>
