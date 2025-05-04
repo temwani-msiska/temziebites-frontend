@@ -6,18 +6,24 @@ import { useEffect } from "react";
 import "leaflet/dist/leaflet.css";
 import type { LatLngExpression } from "leaflet";
 
-// Type
+// Adjusted type for flat Strapi v5 response
 type Eatery = {
   id: number;
-  attributes?: {
-    name: string;
-    description: string;
-    latitude: number;
-    longitude: number;
-    images: {
-      data: { attributes: { url: string } }[];
-    };
-    review?: { final: string };
+  name: string;
+  description: string;
+  latitude: number;
+  longitude: number;
+  city: string;
+  category: string;
+  images: {
+    data: { attributes: { url: string } }[];
+  };
+  review?: {
+    food: string;
+    service: string;
+    pricing: string;
+    extras: string;
+    final: string;
   };
 };
 
@@ -39,21 +45,29 @@ export default function MapClient({ eateries }: MapClientProps) {
   return (
     <MapContainer center={center} zoom={6} style={{ height: "600px", width: "100%" }}>
       <TileLayer
-        // ✅ Secure HTTPS tile URL
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution="&copy; OpenStreetMap contributors"
       />
 
       {eateries.map((eatery) => {
-        if (!eatery?.attributes) return null;
+        if (!eatery) return null;
 
-        const { name, description, latitude, longitude, images, review } = eatery.attributes;
+        const {
+          id,
+          name,
+          description,
+          latitude,
+          longitude,
+          images,
+          review,
+        } = eatery;
+
         const imgSrc = images?.data?.[0]?.attributes?.url
           ? `https://app.temziebites.com${images.data[0].attributes.url}`
           : "";
 
         return (
-          <Marker key={eatery.id} position={[latitude, longitude] as LatLngExpression}>
+          <Marker key={id} position={[latitude, longitude] as LatLngExpression}>
             <Popup>
               <div className="text-sm max-w-[220px]">
                 <strong className="text-base text-[#d94f04]">{name}</strong>
