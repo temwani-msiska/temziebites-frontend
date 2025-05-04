@@ -1,257 +1,362 @@
-/* src/app/intro/page.tsx */
 "use client";
 
-import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import Lottie from '@/lib/dynamicLottie';          // ssr:false wrapper
-import Image from 'next/image';
-import Link from 'next/link';
-import sparkleAnimation from '@/animations/sparkle.json';
+import { useState, useRef } from "react";
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import { Play, X, ChevronDown } from "lucide-react";
 
-/*————————————————————  DATA  ————————————————————*/
-type Milestone = {
-  year: string;
-  title: string;
-  description: string;
-  media: string;
-  isVideo: boolean;
-  position: 'top' | 'bottom';
+const milestones = {
+  "2016": [
+    {
+      title: "Temzie Bites is Born",
+      description:
+        "Armed with a Huawei P9, wild curiosity, and zero fear, Temzie Bites launches with a spicy spark and a dream to flavor the world.",
+      media: "/images/Original Logo.png",
+      isVideo: false,
+    },
+    {
+      title: "First WordPress Post",
+      description:
+        "With trembling hands and a plate of tikka chicken, the first blog post hits the internet — and Temzie’s flavor revolution begins.",
+      media: "/images/tikkachicken.jpg",
+      isVideo: false,
+    },
+  ],
+  "2017": [
+    {
+      title: "First Video",
+      description:
+        "Lights, camera, hunger! The kitchen transforms into a stage as Temzie debuts its first sizzling video.",
+      media: "/videos/millet-nshima.mp4",
+      isVideo: true,
+    },
+    {
+      title: "New Logo, New Temzie",
+      description:
+        "Out with the old, in with the bold — Temzie rebrands with fresh flair and unstoppable energy.",
+      media: "/images/Logo2.png",
+      isVideo: false,
+    },
+    {
+      title: "New Camera",
+      description:
+        "Goodbye grainy pixels, hello delicious detail — a new camera brings every bite to life.",
+      media: "/videos/chibwawa.mp4",
+      isVideo: true,
+    },
+  ],
+  "2018": [
+    {
+      title: "Foodies TV Show",
+      description:
+        "From clicks to cable — Temzie Bites makes its national TV debut, bringing Zambian kitchens into living rooms across the country.",
+      media: "/videos/foodies.mp4",
+      isVideo: true,
+    },
+    {
+      title: "Another Logo, Same Heart",
+      description:
+        "Reimagined yet rooted — the new logo reflects a bolder, more flavorful identity.",
+      media: "/images/temziebites.png",
+      isVideo: false,
+    },
+    {
+      title: "Official Website Launch",
+      description:
+        "A digital kitchen is born. TemzieBites.com goes live — a home for every story, spice, and spoonful.",
+      media: "/images/TemziebitesWebsite.png",
+      isVideo: false,
+    },
+  ],
+  "2019": [
+    {
+      title: "Delele Goes Viral!",
+      description:
+        "Who knew slime could shine? The iconic delele video hits 100K views — proof that flavor has no rules.",
+      media: "/images/delele.jpg",
+      isVideo: false,
+    },
+    {
+      title: "A Taste of Adventure",
+      description:
+        "Curry goat, Zambian soul. A bold step into uncharted flavors, wrapped in tradition and fire.",
+      media: "/images/goat.jpg",
+      isVideo: false,
+    },
+    {
+      title: "Zambia’s Culinary Scene Explodes",
+      description:
+        "Fusion, fire, and flavor — new eateries and bold plates paint Zambia’s food map with delicious color.",
+      media: "/images/mexican.jpg",
+      isVideo: false,
+    },
+  ],
+  "2021": [
+    {
+      title: "Temzie Bites Pop-Up",
+      description:
+        "What began as a blog becomes a live experience — the first-ever Temzie Bites pop-up brings the internet’s favorite flavors to real-life plates.",
+      media: "/images/popup.jpg",
+      isVideo: false,
+    },
+  ],
 };
 
-const timelineData: Milestone[] = [
-  { year: 'July 2016', title: 'Temzie Bites is Born',       description: 'Armed with a Huawei P9…',               media: '/images/Original Logo.png',             isVideo: false, position: 'top' },
-  { year: 'Aug 2016',  title: 'First WordPress Post',       description: 'Clicked “Publish”…',                    media: '/images/tikkachicken.jpg',              isVideo: false, position: 'bottom' },
-  { year: 'Mar 2017',  title: 'First Video',                description: 'Lights, camera…',                       media: '/videos/millet-nshima.mp4',             isVideo: true,  position: 'top' },
-  { year: 'Mar 2017',  title: 'New Logo, New Temzie',       description: 'Fresh look, fresh vibe…',               media: '/images/Logo2.png',                     isVideo: false, position: 'bottom' },
-  { year: 'Apr 2017',  title: 'New Camera',                 description: 'Say hello to HD…',                      media: '/videos/Chibwawa Recipe.mp4',           isVideo: true,  position: 'top' },
-  { year: 'May 2018',  title: 'Foodies TV Show',            description: 'From the kitchen…',                     media: '/videos/Foodies Episode 1 Promo.mp4',   isVideo: true,  position: 'bottom' },
-  { year: 'Oct 2019',  title: 'Delele Video Hits 100 k!',   description: 'Who knew slimy…',                       media: '/images/delele.jpg',                    isVideo: false, position: 'top' },
-  { year: 'May 2021',  title: 'Pop-Up Experience',          description: 'Turning dreams…',                       media: '/images/popup.jpg',                     isVideo: false, position: 'bottom' },
-];
-
-/*—————————————————  SINGLE MILESTONE  —————————————————*/
-function TimelineMilestone({ year, title, description, media, isVideo, position }: Milestone) {
-  const Bubble = (
-    <motion.div
-      className="md:w-44 md:h-44 w-36 h-36 rounded-full overflow-hidden border-4 border-transparent bg-white shadow-2xl"
-      initial={{ scale: 0.8, opacity: 0.5 }}
-      whileInView={{ scale: 1, opacity: 1 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: true, amount: 0.4 }}
-    >
-      {isVideo ? (
-        <video
-          src={media}
-          muted
-          autoPlay
-          loop
-          playsInline
-          className="w-full h-full object-cover"
-        />
-      ) : (
-        <Image
-          src={media}
-          alt={title}
-          width={176}
-          height={176}
-          className="w-full h-full object-cover"
-        />
-      )}
-    </motion.div>
-  );
-
-  const Text = (
-    <motion.div
-      className="bg-white/90 backdrop-blur-sm px-5 py-4 rounded-xl shadow-lg text-center max-w-[15rem]"
-      initial={{ y: 20, opacity: 0 }}
-      whileInView={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, delay: 0.1 }}
-      viewport={{ once: true, amount: 0.5 }}
-    >
-      <h3 className="text-xl font-extrabold">{year}</h3>
-      <h4 className="text-base font-semibold">{title}</h4>
-      <p className="text-xs mt-1 text-gray-700">{description}</p>
-    </motion.div>
-  );
-
-  const Connector = (
-    <motion.div
-      className="w-px h-16 bg-gradient-to-b from-red-600 via-yellow-500 to-green-600"
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      transition={{ duration: 0.8, delay: 0.2 }}
-      viewport={{ once: true }}
-    />
-  );
-
-  return (
-    <div className="relative flex flex-col items-center md:w-64 w-full">
-      <div className="hidden md:block absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-green-600 via-yellow-500 to-red-600 opacity-30 -z-10" />
-      {position === 'top' ? (
-        <>
-          {Text}
-          {Connector}
-          {Bubble}
-        </>
-      ) : (
-        <>
-          {Bubble}
-          {Connector}
-          {Text}
-        </>
-      )}
-    </div>
-  );
-}
-
-/*—————————————————  DESKTOP STRIP  —————————————————*/
-function TimelineStripDesktop() {
-  return (
-    <section className="hidden md:block relative w-full overflow-hidden py-24">
-      <motion.div
-        className="absolute top-1/2 left-0 w-full h-[2px] bg-gradient-to-r from-green-600 via-yellow-500 to-red-600 opacity-40"
-        style={{ translateY: '-50%' }}
-        animate={{ opacity: [0.4, 0.15, 0.4] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="relative z-10 flex items-center space-x-24"
-        initial={{ x: 0 }}
-        animate={{ x: '-50%' }}
-        transition={{ delay: 4, duration: 60, ease: 'linear', repeat: Infinity }}
-      >
-        {timelineData.map((m, i) => (
-          <TimelineMilestone key={i} {...m} />
-        ))}
-        <CTAButton />
-        {timelineData.map((m, i) => (
-          <TimelineMilestone key={`dup-${i}`} {...m} />
-        ))}
-      </motion.div>
-    </section>
-  );
-}
-
-/*—————————————————  MOBILE STACK  —————————————————*/
-function TimelineStackMobile() {
-  return (
-    <section className="md:hidden w-full flex flex-col items-center gap-20 py-16 px-4">
-      {timelineData.map((m, i) => (
-        <TimelineMilestone key={i} {...m} position="top" />
-      ))}
-      <CTAButton />
-    </section>
-  );
-}
-
-/*—————————————————  CTA SHARED  —————————————————*/
-function CTAButton() {
-  return (
-    <Link href="/" className="flex flex-col items-center">
-      <motion.button
-        className="relative overflow-hidden rounded-full px-8 py-3 text-sm font-bold text-white bg-gradient-to-r from-green-600 via-yellow-500 to-red-600 shadow-xl"
-        whileHover={{ scale: 1.05 }}
-      >
-        <span className="relative z-10">🚀 Journey&nbsp;Continues…</span>
-        <motion.span
-          className="absolute inset-0 bg-white/20"
-          initial={{ x: '-100%' }}
-          animate={{ x: ['-100%', '100%'] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
-        />
-      </motion.button>
-    </Link>
-  );
-}
-
-/*—————————————————  PAGE  —————————————————*/
 export default function TimelinePage() {
-  const router = useRouter();
+  const [modalMedia, setModalMedia] = useState<string | null>(null);
+  const [isVideo, setIsVideo] = useState(false);
+  const [activeYear, setActiveYear] = useState<string | null>(null);
+  const timelineRef = useRef<HTMLDivElement>(null);
+
+  const scrollToNextSection = () => {
+    if (timelineRef.current) {
+      timelineRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const handleMediaClick = (media: string, isVideoMedia: boolean) => {
+    setModalMedia(media);
+    setIsVideo(isVideoMedia);
+  };
+
+  const closeModal = () => {
+    setModalMedia(null);
+  };
 
   return (
-    <div className="relative min-h-screen overflow-hidden flex flex-col items-center bg-gradient-to-br from-green-50 via-yellow-50 to-red-50">
-      {/* sparkle layer → plays once */}
-      <Lottie
-        animationData={sparkleAnimation}
-        loop={false}                     
-        className="absolute inset-0 pointer-events-none"
+    <main className="relative min-h-screen bg-cover bg-center bg-no-repeat overflow-y-auto text-white font-sans">
+      {/* Semi-transparent overlay for better text contrast */}
+      <div
+        className="absolute inset-0 z-0 bg-repeat bg-top"
+        style={{
+          backgroundImage: "url('/images/backgroundtimeline.png')",
+          backgroundSize: "auto", // ensures it's not zoomed
+        }}
       />
 
-      {/* floating blobs */}
-      {[
-        'top-[-5rem] left-[-6rem] w-[22rem] h-[22rem] bg-green-100',
-        'top-8 right-12 w-[16rem] h-[16rem] bg-yellow-200 blur-3xl',
-        'bottom-[-4rem] right-[-6rem] w-[24rem] h-[12rem] bg-red-200 rotate-12',
-        'bottom-24 left-6 w-24 h-24 bg-yellow-300',
-      ].map((cls, i) => (
+      {/* Hero Section */}
+      <section className="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-6">
         <motion.div
-          key={i}
-          className={`absolute rounded-full mix-blend-multiply opacity-50 ${cls}`}
-          initial={{ scale: 0.9, opacity: 0.4 }}
-          animate={{ scale: [0.9, 1.1, 0.9], opacity: [0.4, 0.7, 0.4] }}
-          transition={{ duration: 10 + i, repeat: Infinity, ease: 'easeInOut' }}
-        />
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+          className="max-w-4xl mx-auto"
+        >
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="text-5xl md:text-7xl font-extrabold text-[#fff4dd] drop-shadow-lg mb-8"
+          >
+            The Temzie Bites Story
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.8 }}
+            className="text-lg md:text-xl text-white leading-relaxed mb-12 max-w-2xl mx-auto"
+          >
+            From humble blog posts to viral recipes and TV screens — here's how
+            we stirred the pot and transformed Zambian cuisine into a digital
+            sensation.
+          </motion.p>
+
+          <div className="flex justify-center">
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1, duration: 0.6 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={scrollToNextSection}
+              className="flex items-center justify-center space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-3 rounded-full border border-white/30 shadow-lg transition-all duration-300"
+            >
+              <span>Explore our journey</span>
+              <ChevronDown size={18} />
+            </motion.button>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Timeline Navigation */}
+      <div
+        ref={timelineRef}
+        className="sticky top-0 z-20 bg-black/50 backdrop-blur-md py-4 border-b border-white/10 px-4"
+      >
+        <div className="flex items-center justify-center space-x-2 md:space-x-6 max-w-6xl mx-auto overflow-x-auto hide-scrollbar">
+          {Object.keys(milestones).map((year) => (
+            <motion.button
+              key={year}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                const element = document.getElementById(`year-${year}`);
+                if (element) {
+                  element.scrollIntoView({ behavior: "smooth" });
+                }
+                setActiveYear(year);
+              }}
+              className={`px-4 py-2 rounded-full text-sm md:text-base font-medium transition-all duration-300 ${
+                activeYear === year
+                  ? "bg-white/20 border border-white/40 text-white"
+                  : "bg-transparent hover:bg-white/10 text-white/70"
+              }`}
+            >
+              {year}
+            </motion.button>
+          ))}
+        </div>
+      </div>
+
+      {/* Timeline Sections */}
+      {Object.entries(milestones).map(([year, events], index) => (
+        <section
+          id={`year-${year}`}
+          key={year}
+          className="relative z-10 min-h-screen flex flex-col items-center py-24 px-6"
+        >
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true, margin: "-100px" }}
+            className="w-full max-w-7xl mx-auto"
+          >
+            <motion.h2
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="text-6xl md:text-8xl font-extrabold mb-16 text-[#fff4dd]/90 tracking-tight"
+            >
+              {year}
+            </motion.h2>
+
+            <div className="grid gap-8 sm:gap-10 sm:grid-cols-2 lg:grid-cols-3">
+              {events.map(({ title, description, media, isVideo }, j) => (
+                <motion.div
+                  key={j}
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: j * 0.1 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  whileHover={{
+                    scale: 1.03,
+                    boxShadow: "0 10px 30px -10px rgba(0,0,0,0.3)",
+                  }}
+                  className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden transition-all duration-300"
+                >
+                  <div
+                    className="relative h-56 w-full overflow-hidden cursor-pointer"
+                    onClick={() => handleMediaClick(media, isVideo)}
+                  >
+                    {isVideo ? (
+                      <>
+                        <video
+                          src={media}
+                          muted
+                          loop
+                          autoPlay
+                          playsInline
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/10 transition-all duration-300">
+                          <div className="bg-white/20 backdrop-blur-sm p-3 rounded-full">
+                            <Play className="text-white w-8 h-8" />
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <Image
+                        src={media}
+                        alt={title}
+                        width={500}
+                        height={300}
+                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                      />
+                    )}
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
+                      {title}
+                    </h3>
+                    <p className="text-white/80 leading-relaxed">
+                      {description}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </section>
       ))}
 
-      {/* brand badge */}
-      <button
-        onClick={() => router.push('/')}
-        className="absolute top-5 left-5 group flex items-center gap-3 pl-3 pr-5 py-2 rounded-full bg-white/90 shadow-lg border-4 border-transparent hover:shadow-2xl transition-all"
-      >
-        <span className="relative inline-flex">
-          <Image
-            src="/images/logo.png"
-            alt="Temzie Bites Logo"
-            width={48}
-            height={48}
-            className="rounded-full"
-          />
-          <motion.span
-            className="absolute inset-0 rounded-full bg-gradient-to-tr from-green-600 via-yellow-500 to-red-600 opacity-30 blur-md -z-10"
-            animate={{ scale: [1, 1.1, 1] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-          />
-        </span>
-        <span className="text-lg font-extrabold bg-gradient-to-r from-green-700 via-yellow-600 to-red-600 bg-clip-text text-transparent group-hover:tracking-wide transition-all">
-          Temzie&nbsp;Bites
-        </span>
-      </button>
+      {/* Media Modal */}
+      <AnimatePresence>
+        {modalMedia && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 md:p-10"
+            onClick={closeModal}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", damping: 25 }}
+              className="relative max-w-4xl w-full bg-black rounded-xl overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {isVideo ? (
+                <video
+                  src={modalMedia}
+                  autoPlay
+                  controls
+                  playsInline
+                  className="w-full h-auto object-contain"
+                />
+              ) : (
+                <div className="relative pt-[60%] md:pt-[50%]">
+                  <Image
+                    src={modalMedia}
+                    alt="Preview"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+              )}
+              <button
+                onClick={closeModal}
+                className="absolute top-4 right-4 bg-black/50 hover:bg-black/80 backdrop-blur-sm p-2 rounded-full transition-all duration-300"
+              >
+                <X className="text-white w-6 h-6" />
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* header */}
-      <main className="relative z-10 flex flex-col items-center w-full gap-8 pt-28 pb-16">
-        <motion.h1
-          className="text-4xl font-extrabold text-center bg-gradient-to-r from-green-700 via-yellow-600 to-red-600 bg-clip-text text-transparent px-4"
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-        >
-          The&nbsp;Temzie&nbsp;Bites&nbsp;Timeline
-        </motion.h1>
-        <motion.p
-          className="max-w-2xl text-center text-base sm:text-lg text-gray-800/90 px-4"
-          initial={{ y: 10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.15 }}
-        >
-          An&nbsp;<strong>African food blog</strong>&nbsp;celebrating bold flavours, vibrant
-          stories, and the timeless joy of sharing a meal together.
-        </motion.p>
+      {/* Footer */}
+      <footer className="relative z-10 text-center py-8 bg-black/50 border-t border-white/10">
+        <p className="text-white/60 text-sm">
+          © {new Date().getFullYear()} Temzie Bites. All rights reserved.
+        </p>
+      </footer>
 
-        {/* desktop vs mobile timeline */}
-        <TimelineStripDesktop />
-        <TimelineStackMobile />
-
-        {/* back button */}
-        <motion.button
-          onClick={() => router.push('/')}
-          className="mt-4 px-9 py-3 rounded-full bg-gradient-to-r from-green-600 via-yellow-500 to-red-600 text-white shadow-xl text-sm font-semibold"
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          whileHover={{ scale: 1.05 }}
-          transition={{ duration: 0.4 }}
-        >
-          Back&nbsp;to&nbsp;Intro
-        </motion.button>
-      </main>
-    </div>
+      {/* Custom styling for hiding scrollbar */}
+      <style jsx global>{`
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
+    </main>
   );
 }
