@@ -47,7 +47,7 @@ const HARDCODED_EATERIES: Eatery[] = [
     review: {
       food: "BBQ wings tasty but only 3; Kleftico disappointing, sent back; rump steak with garlic sauce was perfection, crispy chips. Crème brûlée good but cold.",
       service: "Excellent, friendly waitress Mutale, food arrived quickly even for a late morning visit.",
-      pricing: "Pricey, e.g., 3 wings for K60. Bring a stacked wallet.",
+      pricing: "Pricey. Bring a stacked wallet.",
       extras: "Loud 70s/80s music distracting, toilets far from restaurant, great ambiance otherwise.",
       final: "7/10 - Good food, great service, pricey. Worth a try!",
     },
