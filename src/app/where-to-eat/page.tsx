@@ -3,7 +3,6 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 
-// Define Eatery type
 type Eatery = {
   id: number;
   name: string;
@@ -24,7 +23,6 @@ type Eatery = {
   };
 };
 
-// Hardcoded eateries data
 const HARDCODED_EATERIES: Eatery[] = [
   {
     id: 1,
@@ -110,22 +108,111 @@ const HARDCODED_EATERIES: Eatery[] = [
   },
 ];
 
-// SSR-safe dynamic import
 const MapClient = dynamic(() => import("@/components/MapClient"), {
   ssr: false,
-}) as React.ComponentType<{ eateries: Eatery[] }>;
+});
 
 export default function WhereToEatPage() {
   const [eateries] = useState<Eatery[]>(HARDCODED_EATERIES);
+  const [selectedEatery, setSelectedEatery] = useState<Eatery | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("All");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const categories = ["All", ...new Set(HARDCODED_EATERIES.map((e) => e.category))];
+
+  const filteredEateries = eateries.filter((eatery) =>
+    (eatery.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+     eatery.description.toLowerCase().includes(searchTerm.toLowerCase())) &&
+    (categoryFilter === "All" || eatery.category === categoryFilter)
+  );
+
+  const handleMarkerClick = (eatery: Eatery) => {
+    setSelectedEatery(eatery);
+    setIsSidebarOpen(true);
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   return (
-    <main className="min-h-screen bg-[#fdf4e8] text-[#2e2e2e] font-sans px-4 py-10">
-      <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#5d3a00] text-center mb-8">
-        Explore Zambia’s Flavor Map 🍴
-      </h1>
+    <main className="min-h-screen bg-[#fdf4e8] text-[#2e2e2e] font-sans">
+      <header className="bg-[#5d3a00] text-white p-4 sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <h1 className="text-2xl md:text-3xl font-serif font-bold">
+            Zambia’s Flavor Map 🍴
+          </h1>
+          <button
+            className="md:hidden p-2 rounded-lg bg-[#d94f04] text-white"
+            onClick={toggleSidebar}
+          >
+            {isSidebarOpen ? "Close" : "Menu"}
+          </button>
+        </div>
+      </header>
 
-      <div className="rounded-2xl overflow-hidden shadow-lg border border-[#f4ddb1] max-w-6xl mx-auto">
-        <MapClient eateries={eateries} />
+      <div className="flex flex-col md:flex-row max-w-7xl mx-auto">
+        <aside
+          className={`${
+            isSidebarOpen ? "block" : "hidden"
+          } md:block w-full md:w-1/3 p-4 bg-[#f4ddb1] md:bg-transparent fixed md:static top-0 left-0 h-full md:h-auto z-20 transition-transform duration-300 md:transform-none`}
+        >
+          <div className="sticky top-20">
+            <input
+              type="text"
+              placeholder="Search eateries..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full p-2 rounded-lg border border-[#d94f04] focus:outline-none focus:ring-2 focus:ring-[#d94f04] mb-4"
+            />
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="w-full p-2 rounded-lg border border-[#d94f04] focus:outline-none focus:ring-2 focus:ring-[#d94f04] mb-4"
+            >
+              {categories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+            <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+              {filteredEateries.length > 0 ? (
+                filteredEateries.map((eatery) => (
+                  <div
+                    key={eatery.id}
+                    onClick={() => {
+                      setSelectedEatery(eatery);
+                      setIsSidebarOpen(false);
+                    }}
+                    className={`p-4 rounded-lg cursor-pointer ${
+                      selectedEatery?.id === eatery.id
+                        ? "bg-[#d94f04] text-white"
+                        : "bg-white hover:bg-[#f4ddb1]"
+                    } shadow-md`}
+                  >
+                    <h3 className="font-bold">{eatery.name}</h3>
+                    <p className="text-sm">{eatery.description}</p>
+                    <p className="text-xs italic">{eatery.review?.final}</p>
+                  </div>
+                ))
+              ) : (
+                <p>No eateries found.</p>
+              )}
+            </div>
+          </div>
+        </aside>
+
+        <div className="w-full md:w-2/3 p-4">
+          <div className="rounded-2xl overflow-hidden shadow-lg border border-[#f4ddb1]">
+            <MapClient
+              eateries={filteredEateries}
+              onMarkerClick={handleMarkerClick}
+              selectedEatery={selectedEatery} // Added to pass to MapClient
+            />
+          </div>
+        </div>
       </div>
     </main>
   );
