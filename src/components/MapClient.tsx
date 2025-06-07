@@ -1,3 +1,4 @@
+// MapClient component for rendering the map with eateries
 "use client";
 
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
@@ -28,7 +29,7 @@ type Eatery = {
 type MapClientProps = {
   eateries: Eatery[];
   onMarkerClick: (eatery: Eatery) => void;
-  selectedEatery: Eatery | null; // Added to pass selectedEatery to MapController
+  selectedEatery: Eatery | null;
 };
 
 function MapController({ selectedEatery }: { selectedEatery: Eatery | null }) {
@@ -69,12 +70,13 @@ export default function MapClient({ eateries, onMarkerClick, selectedEatery }: M
   }
 
   return (
-    <div ref={containerRef} className="h-[500px] md:h-[600px] w-full">
+    <div ref={containerRef} className="h-[500px] md:h-[600px] w-full relative z-0">
       <MapContainer
         center={center}
         zoom={10}
         className="h-full w-full"
         ref={mapRef}
+        style={{ zIndex: 0 }} // Ensure map stays below modal
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -93,7 +95,7 @@ export default function MapClient({ eateries, onMarkerClick, selectedEatery }: M
                 click: () => onMarkerClick(eatery),
               }}
             >
-              <Popup maxWidth={300}>
+              <Popup maxWidth={300} className="z-10">
                 <div className="text-sm w-[250px]">
                   <strong className="text-base text-[#d94f04]">{name}</strong>
                   <p className="mt-1">{description}</p>
@@ -133,7 +135,7 @@ export default function MapClient({ eateries, onMarkerClick, selectedEatery }: M
             </Marker>
           );
         })}
-        <MapController selectedEatery={selectedEatery} /> {/* Moved inside MapContainer */}
+        <MapController selectedEatery={selectedEatery} />
       </MapContainer>
     </div>
   );

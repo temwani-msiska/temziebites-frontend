@@ -1,7 +1,9 @@
+// WhereToEatPage component for displaying eateries with a map and modal
 "use client";
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
 
 type Eatery = {
   id: number;
@@ -118,6 +120,7 @@ export default function WhereToEatPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const categories = ["All", ...new Set(HARDCODED_EATERIES.map((e) => e.category))];
 
@@ -130,15 +133,20 @@ export default function WhereToEatPage() {
   const handleMarkerClick = (eatery: Eatery) => {
     setSelectedEatery(eatery);
     setIsSidebarOpen(true);
+    setIsModalOpen(true);
   };
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
-    <main className="min-h-screen bg-[#fdf4e8] text-[#2e2e2e] font-sans">
-      <header className="bg-[#5d3a00] text-white p-4 sticky top-0 z-10">
+    <main className="min-h-screen bg-[#fdf4e8] text-[#2e2e2e] font-sans relative">
+      <header className="bg-[white] text-[#5d3a00] p-4 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <h1 className="text-2xl md:text-3xl font-serif font-bold">
             Zambia’s Flavor Map 🍴
@@ -185,6 +193,7 @@ export default function WhereToEatPage() {
                     onClick={() => {
                       setSelectedEatery(eatery);
                       setIsSidebarOpen(false);
+                      setIsModalOpen(true);
                     }}
                     className={`p-4 rounded-lg cursor-pointer ${
                       selectedEatery?.id === eatery.id
@@ -205,15 +214,90 @@ export default function WhereToEatPage() {
         </aside>
 
         <div className="w-full md:w-2/3 p-4">
-          <div className="rounded-2xl overflow-hidden shadow-lg border border-[#f4ddb1]">
+          <div className="rounded-2xl overflow-hidden shadow-lg border border-[#f4ddb1] z-10">
             <MapClient
               eateries={filteredEateries}
               onMarkerClick={handleMarkerClick}
-              selectedEatery={selectedEatery} // Added to pass to MapClient
+              selectedEatery={selectedEatery}
             />
           </div>
         </div>
       </div>
+
+      {selectedEatery && isModalOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-60"
+          onClick={closeModal}
+        >
+          <motion.div
+            initial={{ scale: 0.8, y: 50 }}
+            animate={{ scale: 1, y: 0 }}
+            className="bg-white p-6 rounded-lg max-w-lg w-full mx-4 z-60 overflow-y-auto max-h-[90vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-2xl font-bold mb-4">{selectedEatery.name}</h2>
+            <p className="text-sm mb-4">{selectedEatery.description}</p>
+            {selectedEatery.images?.data?.length > 0 && (
+              <div className="mt-4 space-y-4">
+                {selectedEatery.images.data.map((item, index) => {
+                  const src = item.attributes.url.startsWith("http")
+                    ? item.attributes.url
+                    : `/images${item.attributes.url}`;
+                  const isVideo = src.endsWith(".mp4");
+
+                  return isVideo ? (
+                    <video
+                      key={index}
+                      src={src}
+                      controls
+                      className="rounded-lg w-full h-[200px] object-cover border"
+                    />
+                  ) : (
+                    <img
+                      key={index}
+                      src={src}
+                      alt={`${selectedEatery.name} ${index + 1}`}
+                      className="rounded-lg w-full h-[200px] object-cover border"
+                    />
+                  );
+                })}
+              </div>
+            )}
+            {selectedEatery.review && (
+              <div className="space-y-2 mt-4">
+                <p><strong>Food:</strong> {selectedEatery.review.food}</p>
+                <p><strong>Service:</strong> {selectedEatery.review.service}</p>
+                <p><strong>Pricing:</strong> {selectedEatery.review.pricing}</p>
+                <p><strong>Extras:</strong> {selectedEatery.review.extras}</p>
+                <p><strong>Final:</strong> {selectedEatery.review.final}</p>
+              </div>
+            )}
+            <button
+              onClick={closeModal}
+              className="mt-6 bg-[#d94f04] text-white px-4 py-2 rounded-lg"
+            >
+              Close
+            </button>
+          </motion.div>
+        </motion.div>
+      )}
+
+      <footer className="relative z-10 text-center py-12 bg-[#F5E8D2]/90 border-t-2 border-[#D2691E]/30 flex flex-col items-center gap-6">
+        <motion.button
+          whileHover={{ scale: 1.1, rotate: 5, boxShadow: "0 8px 20px rgba(210,105,30,0.3)" }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => (window.location.href = "/")}
+          className="bg-[#D2691E]/40 hover:bg-[#D2691E]/60 text-[#F5E8D2] px-8 py-4 rounded-full border-2 border-[#D2691E] shadow-lg transition-all duration-300"
+        >
+          Back to the Feast
+        </motion.button>
+        <p className="text-[#5C4033]/70 text-sm italic">
+          © {new Date().getFullYear()} Temzie Bites. Crafted with spice & soul.
+        </p>
+      </footer>
     </main>
   );
 }
