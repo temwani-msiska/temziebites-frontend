@@ -110,6 +110,7 @@ export default function MapClient({ eateries, onMarkerClick, selectedEatery }: M
                         return isVideo ? (
                           <video
                             key={index}
+                            muted
                             src={src}
                             controls
                             className="rounded-lg w-full h-[120px] object-cover border"

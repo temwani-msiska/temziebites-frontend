@@ -132,6 +132,7 @@ export default function WhereToEatPage() {
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isReviewsModalOpen, setIsReviewsModalOpen] = useState(false);
   const [googleReviews, setGoogleReviews] = useState<GoogleReview[]>([]);
 
   const categories = ["All", ...new Set(HARDCODED_EATERIES.map((e) => e.category))];
@@ -175,6 +176,10 @@ export default function WhereToEatPage() {
 
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  const toggleReviewsModal = () => {
+    setIsReviewsModalOpen(!isReviewsModalOpen);
   };
 
   return (
@@ -255,7 +260,7 @@ export default function WhereToEatPage() {
             />
           </div>
           {selectedEatery && (
-            <aside className="hidden md:block w-1/3 p-4 bg-[#f4ddb1] rounded-lg ml-4 max-h-[600px] overflow-y-auto">
+            <aside className="hidden md:block w-2/5 p-4 bg-[#f4ddb1] rounded-lg ml-4 max-h-[600px] overflow-y-auto">
               <h3 className="text-xl font-bold mb-4">Google Reviews for {selectedEatery.name}</h3>
               {googleReviews.length > 0 ? (
                 googleReviews.map((review, index) => (
@@ -328,8 +333,53 @@ export default function WhereToEatPage() {
               </div>
             )}
             <button
+              onClick={toggleReviewsModal}
+              className="mt-4 bg-[#d94f04] text-white px-4 py-2 rounded-lg md:hidden"
+            >
+              View Google Reviews
+            </button>
+            <button
               onClick={closeModal}
-              className="mt-6 bg-[#d94f04] text-white px-4 py-2 rounded-lg"
+              className="mt-4 bg-[#d94f04] text-white px-4 py-2 rounded-lg"
+            >
+              Close
+            </button>
+          </motion.div>
+        </motion.div>
+      )}
+
+      {selectedEatery && isReviewsModalOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-60 md:hidden"
+          onClick={toggleReviewsModal}
+        >
+          <motion.div
+            initial={{ scale: 0.8, y: 50 }}
+            animate={{ scale: 1, y: 0 }}
+            className="bg-white p-6 rounded-lg max-w-lg w-full mx-4 z-60 overflow-y-auto max-h-[90vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-xl font-bold mb-4">Google Reviews for {selectedEatery.name}</h3>
+            {googleReviews.length > 0 ? (
+              googleReviews.map((review, index) => (
+                <div key={index} className="mb-4 p-3 bg-[#f4ddb1] rounded-lg shadow">
+                  <p className="font-semibold">{review.author_name}</p>
+                  <p className="text-sm">Rating: {review.rating}/5</p>
+                  <p className="text-sm">{review.text}</p>
+                  <p className="text-xs text-gray-500">
+                    {new Date(review.time * 1000).toLocaleDateString()}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p>No reviews available.</p>
+            )}
+            <button
+              onClick={toggleReviewsModal}
+              className="mt-4 bg-[#d94f04] text-white px-4 py-2 rounded-lg"
             >
               Close
             </button>
