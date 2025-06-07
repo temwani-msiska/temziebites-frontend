@@ -1,7 +1,6 @@
-// WhereToEatPage component for displaying eateries with a map and modal
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 
@@ -23,6 +22,14 @@ type Eatery = {
     extras: string;
     final: string;
   };
+  placeId?: string;
+};
+
+type GoogleReview = {
+  author_name: string;
+  rating: number;
+  text: string;
+  time: number;
 };
 
 const HARDCODED_EATERIES: Eatery[] = [
@@ -44,6 +51,7 @@ const HARDCODED_EATERIES: Eatery[] = [
       extras: "Loud 70s/80s music distracting, toilets far from restaurant, great ambiance otherwise.",
       final: "7/10 - Good food, great service, pricey. Worth a try!",
     },
+    placeId: "ChIJI7iZkBvzQBkR2n8JOAW2SC0",
   },
   {
     id: 2,
@@ -63,6 +71,7 @@ const HARDCODED_EATERIES: Eatery[] = [
       extras: "Great atmosphere, limited seating can be an issue.",
       final: "6/10 - Good food, nice vibe, worth a visit if you get a seat.",
     },
+    placeId: "ChIJwXHt03CNQBkRPdv2KwrtQKw",
   },
   {
     id: 3,
@@ -85,6 +94,7 @@ const HARDCODED_EATERIES: Eatery[] = [
       extras: "Real alcohol available, try to get a window seat in summer for a better experience.",
       final: "6.8/10 - Solid choice for budget-friendly dining, but avoid peak weekend times.",
     },
+    placeId: "ChIJbegrY4-NQBkRsEFlOjsiHkM",
   },
   {
     id: 4,
@@ -107,6 +117,7 @@ const HARDCODED_EATERIES: Eatery[] = [
       extras: "Nice ambiance, but don’t come hungry due to portion sizes.",
       final: "4/10 - Overpriced and underwhelming, only visit if you’re not starving.",
     },
+    placeId: "ChIJ7fecKQCNQBkRycPOfGvanto",
   },
 ];
 
@@ -121,6 +132,7 @@ export default function WhereToEatPage() {
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [googleReviews, setGoogleReviews] = useState<GoogleReview[]>([]);
 
   const categories = ["All", ...new Set(HARDCODED_EATERIES.map((e) => e.category))];
 
@@ -129,6 +141,27 @@ export default function WhereToEatPage() {
      eatery.description.toLowerCase().includes(searchTerm.toLowerCase())) &&
     (categoryFilter === "All" || eatery.category === categoryFilter)
   );
+
+  useEffect(() => {
+    if (selectedEatery?.placeId) {
+      const fetchGoogleReviews = async () => {
+        try {
+          const response = await fetch(`/api/google-reviews?placeId=${selectedEatery.placeId}`);
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          const data = await response.json();
+          setGoogleReviews(data.reviews || []);
+        } catch (error) {
+          console.error("Error fetching Google Reviews:", error);
+          setGoogleReviews([]);
+        }
+      };
+      fetchGoogleReviews();
+    } else {
+      setGoogleReviews([]);
+    }
+  }, [selectedEatery]);
 
   const handleMarkerClick = (eatery: Eatery) => {
     setSelectedEatery(eatery);
@@ -213,14 +246,33 @@ export default function WhereToEatPage() {
           </div>
         </aside>
 
-        <div className="w-full md:w-2/3 p-4">
-          <div className="rounded-2xl overflow-hidden shadow-lg border border-[#f4ddb1] z-10">
+        <div className="w-full md:w-2/3 p-4 flex">
+          <div className="flex-1 rounded-2xl overflow-hidden shadow-lg border border-[#f4ddb1] z-10">
             <MapClient
               eateries={filteredEateries}
               onMarkerClick={handleMarkerClick}
               selectedEatery={selectedEatery}
             />
           </div>
+          {selectedEatery && (
+            <aside className="hidden md:block w-1/3 p-4 bg-[#f4ddb1] rounded-lg ml-4 max-h-[600px] overflow-y-auto">
+              <h3 className="text-xl font-bold mb-4">Google Reviews for {selectedEatery.name}</h3>
+              {googleReviews.length > 0 ? (
+                googleReviews.map((review, index) => (
+                  <div key={index} className="mb-4 p-3 bg-white rounded-lg shadow">
+                    <p className="font-semibold">{review.author_name}</p>
+                    <p className="text-sm">Rating: {review.rating}/5</p>
+                    <p className="text-sm">{review.text}</p>
+                    <p className="text-xs text-gray-500">
+                      {new Date(review.time * 1000).toLocaleDateString()}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p>No reviews available.</p>
+              )}
+            </aside>
+          )}
         </div>
       </div>
 
