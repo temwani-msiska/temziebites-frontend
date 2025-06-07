@@ -138,53 +138,46 @@ export default function TimelinePage() {
   };
 
   return (
-    <main className="relative min-h-screen bg-cover bg-center bg-no-repeat overflow-y-auto text-white font-sans">
-      <div
-        className="absolute inset-0 z-0 bg-repeat bg-top"
-        style={{
-          backgroundImage: "url('/images/backgroundtimeline.png')",
-          backgroundSize: "auto",
-        }}
-      />
+    <main className="relative min-h-screen bg-gradient-to-br from-[#F5E8D2] via-[#D2691E]/30 to-[#5C4033]/20 overflow-y-auto text-[#3D2B1F] font-serif">
+      <div className="absolute inset-0 z-0 opacity-20 bg-[url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2240%22 fill=%22none%22 stroke=%22%23D2691E%22 stroke-width=%222%22/%3E%3Cpath fill=%22%23D2691E%22 opacity=%220.1%22 d=%22M50 10a40 40 0 0 1 40 40 40 40 0 0 1-40 40 40 40 0 0 1-40-40 40 40 0 0 1 40-40z%22/%3E%3C/svg%3E')] bg-repeat bg-[length:200px_200px] animate-pulse" />
       <section className="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-6">
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-          className="max-w-4xl mx-auto"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
+          className="max-w-5xl mx-auto"
         >
           <motion.h1
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-5xl md:text-7xl font-extrabold text-[#fff4dd] drop-shadow-lg mb-8"
+            transition={{ duration: 0.8, delay: 0.3, type: "spring" }}
+            className="text-5xl md:text-8xl font-extrabold text-[#D2691E] drop-shadow-lg mb-8"
+            style={{ textShadow: "3px 3px 6px rgba(0,0,0,0.3)" }}
           >
-            The Temzie Bites Story
+            The Temzie Bites Odyssey
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.6, duration: 0.8 }}
-            className="text-lg md:text-xl text-white leading-relaxed mb-12 max-w-2xl mx-auto"
+            className="text-lg md:text-2xl text-[#5C4033] leading-relaxed mb-12 max-w-3xl mx-auto italic"
           >
-            From humble blog posts to viral recipes and TV screens —
-            here&rsquo;s how we stirred the pot and transformed Zambian cuisine
-            into a digital sensation.
+            From a flicker of flavor to a roaring culinary epic, join Temzie Bites on a zestful journey reshaping Zambian cuisine.
           </motion.p>
 
           <div className="flex justify-center">
             <motion.button
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1, duration: 0.6 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.1, rotate: 5, boxShadow: "0 8px 20px rgba(210,105,30,0.3)" }}
+              whileTap={{ scale: 0.9 }}
               onClick={scrollToNextSection}
-              className="flex items-center justify-center space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-3 rounded-full border border-white/30 shadow-lg transition-all duration-300"
+              className="flex items-center justify-center space-x-3 bg-[#D2691E]/40 hover:bg-[#D2691E]/60 text-[#F5E8D2] px-8 py-4 rounded-full border-2 border-[#D2691E] shadow-lg transition-all duration-300"
             >
-              <span>Explore our journey</span>
-              <ChevronDown size={18} />
+              <span className="font-bold">Dive In</span>
+              <ChevronDown size={20} className="animate-bounce" />
             </motion.button>
           </div>
         </motion.div>
@@ -192,14 +185,14 @@ export default function TimelinePage() {
 
       <div
         ref={timelineRef}
-        className="sticky top-0 z-20 bg-black/50 backdrop-blur-md py-4 border-b border-white/10 px-4"
+        className="sticky top-0 z-20 bg-[#F5E8D2]/90 backdrop-blur-lg py-4 border-b-2 border-[#D2691E]/30 px-4 shadow-md"
       >
-        <div className="flex items-center justify-center space-x-2 md:space-x-6 max-w-6xl mx-auto overflow-x-auto hide-scrollbar">
+        <div className="flex items-center justify-center space-x-3 md:space-x-8 max-w-6xl mx-auto overflow-x-auto hide-scrollbar">
           {Object.keys(milestones).map((year) => (
             <motion.button
               key={year}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.15, backgroundColor: "#D2691E/40", rotate: 3 }}
+              whileTap={{ scale: 0.9 }}
               onClick={() => {
                 const element = document.getElementById(`year-${year}`);
                 if (element) {
@@ -207,10 +200,10 @@ export default function TimelinePage() {
                 }
                 setActiveYear(year);
               }}
-              className={`px-4 py-2 rounded-full text-sm md:text-base font-medium transition-all duration-300 ${
+              className={`px-5 py-3 rounded-full text-sm md:text-lg font-semibold transition-all duration-300 ${
                 activeYear === year
-                  ? "bg-white/20 border border-white/40 text-white"
-                  : "bg-transparent hover:bg-white/10 text-white/70"
+                  ? "bg-[#D2691E]/50 border-2 border-[#D2691E] text-[#F5E8D2] shadow-md"
+                  : "bg-[#8B4513]/20 hover:bg-[#D2691E]/30 text-[#5C4033]"
               }`}
             >
               {year}
@@ -223,41 +216,44 @@ export default function TimelinePage() {
         <section
           id={`year-${year}`}
           key={year}
-          className="relative z-10 min-h-screen flex flex-col items-center py-24 px-6"
+          className="relative z-10 min-h-screen flex flex-col items-center py-28 px-6"
         >
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
             viewport={{ once: true, margin: "-100px" }}
             className="w-full max-w-7xl mx-auto"
           >
             <motion.h2
-              initial={{ opacity: 0, x: -30 }}
+              initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.6, type: "spring" }}
               viewport={{ once: true }}
-              className="text-6xl md:text-8xl font-extrabold mb-16 text-[#fff4dd]/90 tracking-tight"
+              className="text-6xl md:text-9xl font-extrabold mb-16 text-[#D2691E]/95 tracking-tight"
+              style={{ textShadow: "4px 4px 8px rgba(0,0,0,0.3)" }}
             >
               {year}
             </motion.h2>
 
-            <div className="grid gap-8 sm:gap-10 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-10 sm:gap-12 sm:grid-cols-2 lg:grid-cols-3">
               {events.map(({ title, description, media, isVideo }, j) => (
                 <motion.div
                   key={j}
-                  initial={{ opacity: 0, y: 50 }}
+                  initial={{ opacity: 0, y: 80 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: j * 0.1 }}
+                  transition={{ duration: 0.6, delay: j * 0.15, type: "spring" }}
                   viewport={{ once: true, margin: "-50px" }}
                   whileHover={{
-                    scale: 1.03,
-                    boxShadow: "0 10px 30px -10px rgba(0,0,0,0.3)",
+                    scale: 1.05,
+                    boxShadow: "0 12px 40px rgba(0,0,0,0.5)",
+                    rotate: 1,
+                    transition: { duration: 0.3 },
                   }}
-                  className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden transition-all duration-300"
+                  className="bg-gradient-to-br from-[#8B4513]/50 to-[#D2691E]/30 backdrop-blur-md border-2 border-[#D2691E]/40 rounded-2xl overflow-hidden transition-all duration-300"
                 >
                   <div
-                    className="relative h-56 w-full overflow-hidden cursor-pointer"
+                    className="relative h-64 w-full overflow-hidden cursor-pointer group"
                     onClick={() => handleMediaClick(media, isVideo)}
                   >
                     {isVideo ? (
@@ -268,12 +264,15 @@ export default function TimelinePage() {
                           loop
                           autoPlay
                           playsInline
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
-                        <div className="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/10 transition-all duration-300">
-                          <div className="bg-white/20 backdrop-blur-sm p-3 rounded-full">
-                            <Play className="text-white w-8 h-8" />
-                          </div>
+                        <div className="absolute inset-0 bg-[#5C4033]/40 flex items-center justify-center group-hover:bg-[#5C4033]/20 transition-all duration-300">
+                          <motion.div
+                            whileHover={{ scale: 1.2, rotate: 15 }}
+                            className="bg-[#D2691E]/40 backdrop-blur-lg p-4 rounded-full"
+                          >
+                            <Play className="text-[#F5E8D2] w-10 h-10" />
+                          </motion.div>
                         </div>
                       </>
                     ) : (
@@ -282,15 +281,15 @@ export default function TimelinePage() {
                         alt={title}
                         width={500}
                         height={300}
-                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
                     )}
                   </div>
-                  <div className="p-6">
-                    <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
+                  <div className="p-8">
+                    <h3 className="text-2xl md:text-3xl font-bold text-[#D2691E] mb-3 tracking-wide">
                       {title}
                     </h3>
-                    <p className="text-white/80 leading-relaxed">
+                    <p className="text-[#5C4033] leading-relaxed text-lg">
                       {description}
                     </p>
                   </div>
@@ -304,19 +303,19 @@ export default function TimelinePage() {
       <AnimatePresence>
         {modalMedia && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 md:p-10"
+            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            animate={{ opacity: 1, backdropFilter: "blur(10px)" }}
+            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            transition={{ duration: 0.4 }}
+            className="fixed inset-0 bg-[#5C4033]/95 z-50 flex items-center justify-center p-6 md:p-12"
             onClick={closeModal}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: "spring", damping: 25 }}
-              className="relative max-w-4xl w-full bg-black rounded-xl overflow-hidden"
+              initial={{ scale: 0.8, opacity: 0, rotate: -10 }}
+              animate={{ scale: 1, opacity: 1, rotate: 0 }}
+              exit={{ scale: 0.8, opacity: 0, rotate: 10 }}
+              transition={{ type: "spring", damping: 20, stiffness: 100 }}
+              className="relative max-w-5xl w-full bg-gradient-to-b from-[#8B4513] to-[#5C4033] rounded-2xl overflow-hidden shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               {isVideo ? (
@@ -337,28 +336,29 @@ export default function TimelinePage() {
                   />
                 </div>
               )}
-              <button
+              <motion.button
+                whileHover={{ scale: 1.2, rotate: 90 }}
                 onClick={closeModal}
-                className="absolute top-4 right-4 bg-black/50 hover:bg-black/80 backdrop-blur-sm p-2 rounded-full transition-all duration-300"
+                className="absolute top-6 right-6 bg-[#D2691E]/50 hover:bg-[#D2691E]/70 backdrop-blur-lg p-3 rounded-full transition-all duration-300"
               >
-                <X className="text-white w-6 h-6" />
-              </button>
+                <X className="text-[#F5E8D2] w-8 h-8" />
+              </motion.button>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <footer className="relative z-10 text-center py-10 bg-black/50 border-t border-white/10 flex flex-col items-center gap-4">
+      <footer className="relative z-10 text-center py-12 bg-[#F5E8D2]/90 border-t-2 border-[#D2691E]/30 flex flex-col items-center gap-6">
         <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.1, rotate: 5, boxShadow: "0 8px 20px rgba(210,105,30,0.3)" }}
+          whileTap={{ scale: 0.9 }}
           onClick={() => (window.location.href = "/")}
-          className="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-full border border-white/20 transition-all duration-300"
+          className="bg-[#D2691E]/40 hover:bg-[#D2691E]/60 text-[#F5E8D2] px-8 py-4 rounded-full border-2 border-[#D2691E] shadow-lg transition-all duration-300"
         >
-          Home
+          Back to the Feast
         </motion.button>
-        <p className="text-white/60 text-sm">
-          © {new Date().getFullYear()} Temzie Bites. All rights reserved.
+        <p className="text-[#5C4033]/70 text-sm italic">
+          © {new Date().getFullYear()} Temzie Bites. Crafted with spice & soul.
         </p>
       </footer>
 
@@ -369,6 +369,14 @@ export default function TimelinePage() {
         .hide-scrollbar {
           -ms-overflow-style: none;
           scrollbar-width: none;
+        }
+        @keyframes pulse {
+          0% { opacity: 0.2; }
+          50% { opacity: 0.4; }
+          100% { opacity: 0.2; }
+        }
+        .animate-pulse {
+          animation: pulse 4s infinite ease-in-out;
         }
       `}</style>
     </main>
